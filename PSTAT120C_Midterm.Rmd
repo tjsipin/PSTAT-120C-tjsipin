@@ -1,0 +1,361 @@
+---
+title: "PSTAT 120C Midterm"
+author: "TJ Sipin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+```
+
+## Goal
+
+Should miles per gallon be predicted based on weight alone, or on the linear combination of weight and displacement?
+
+
+```{r cars}
+data <- read.csv('data.csv')
+```
+
+## Problems
+
+
+1. Answer the following based on a *simple* linear regression, predicting *mpg* ($y$) with *weight* ($x_1$).
+    (a) Fit the specified model. Write the model equation.
+    
+```{r}
+(fit1 <- lm(mpg ~ weight, data = data))
+```
+
+  Model equation:
+$$
+mpg = 40.267655 - 0.004678x_{weight,i}  + \epsilon_i
+$$
+
+  (b) Create a scatterplot of *mpg* and *weight*. Add a line representing the model, with 95% confidence bands. Does the model appear to fit the data?
+  
+```{r}
+ggplot(data,
+       aes(x = weight,
+                 y = mpg)) + 
+  geom_point() + 
+  stat_smooth(method = lm, level = 0.95) + 
+  xlab('Weight') + 
+  ylab('MPG') + 
+  ggtitle('Weight vs. MPG with a 95% Confidence Interval')
+```
+  
+  The model doesn't appear to fit the data too well, as the variance isn't constant.
+
+  (c) Test the null hypothesis that the slope of $x_1, \beta_1,$ is equal to zero. State the hypotheses, test statistic, rejection region(s), and p-value. Do not interpret the conclusion of this test.
+  
+  Hypotheses: 
+  $H_0: \beta_1 = 0, \quad H_\alpha: \beta_1 \neq 0$
+  
+  Note: We want to test $H_0: \beta_1 = a^T \beta = 0,$ where $a^T = (0,1)$. 
+  
+  
+```{r}
+summary(fit1)
+```
+  
+  Test statistic:
+$$
+\begin{align}
+|T| &= \frac{a^T \hat\beta - 0}{S\sqrt{a^T(X^T X)^{-1}}} \\
+&= 3.692
+\end{align}
+$$
+  
+  Rejection region(s):
+  
+  Note: we have $n - 2 = 15 - 2 = 13$ degrees of freedom.
+  
+$$
+\text{reject if }|T| \geq t_{\alpha/2, 13} = t_{0.025, 13} = 2.160.
+$$
+  
+  P-value: $0.00271,$ according to the summary of the fit.
+  
+
+2. Answer the following based on a *multiple* linear regression, predicting *mpg* with *weight* ($x_1$) and *engine displacement* ($x_2$).
+  
+  (a) Fit the specified model. Write the model equation, including your estimates.
+  
+```{r}
+(fit2 <- lm(mpg ~ weight + displacement, data = data))
+```
+  
+  Model equation:
+  
+$$
+mpg_i = 36.5095516 - 0.0003083 x_{weight,i} - 0.0717513 x_{displacement,i} + \epsilon_i
+$$
+
+  (b) Test the null hypothesis that the slope of $x_1, \beta_1,$ is equal to zero. State the hypothesis, test statistic, rejection region(s), and p-value. Interpret the conclusion of this test at $\alpha = 0.05$.
+  
+  Hypotheses: 
+  $H_0: \beta_1 = 0, \quad H_\alpha: \beta_1 \neq 0$
+  
+  Note: We want to test $H_0: \beta_1 = a^T \beta = 0,$ where $a^T = (0,1,0)$. 
+  
+```{r}
+summary(fit2)
+```
+
+  Test statistic:
+  
+$$
+\begin{align}
+|T| &= \frac{a^T \hat\beta - 0}{S\sqrt{a^T(X^T X)^{-1}}} \\
+&= 0.195
+\end{align}
+$$
+  Rejection region(s):
+  
+  Note: we have $n - 2 = 15 - 2 = 13$ degrees of freedom.
+  
+$$
+\text{reject if }|T| \geq t_{\alpha/2, 13} = t_{0.025, 13} = 2.160.
+$$
+
+  P-value: $0.849$, according to the summary of the fit.
+  
+We fail to reject the null hypothesis. That is, there is insufficient evidence to support the claim that the slope of $x_1$, $\beta_1,$ is equal to zero and that *weight* does not contribute information for the prediction of *mpg*.
+
+  (c) Consider $x_1^* = 3000$ and $x_2^* = 150$. Calculate a 95% confidence interval for $\mathbb E[Y | x_1 = x_1^*, x_2 = x_2^*].$ Calculate a 95% prediction interval for $y_i,$ given $x_1 = x_1^*$ and $x_2 = x_2^*$. Interpret both of these intervals in context.
+  
+  We can use the equation to find a 95% confidence interval:
+  
+$$
+\mathbf a' \hat\beta \pm t_{\alpha/2}S\sqrt{\mathbf {a'(X'X)^{-1}a}}
+$$
+
+For the model, 
+
+$$
+\mathbb E(Y) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 = \mathbf {a'\beta},\qquad \mathbf a = 
+\begin{bmatrix}
+a_0 \\
+a_1 \\
+a_2
+\end{bmatrix} = 
+\begin{bmatrix}
+1 \\
+x_1 \\
+x_2
+\end{bmatrix}
+$$
+
+We're interested in the 95% confidence interval for $E[Y | x_1 = 3000, x_2 = 150]$, so we have
+
+$$
+\begin{align}
+E[Y | x_1 = 3000, x_2 = 150] &= 
+\begin{bmatrix}
+1 \\
+3000 \\
+150
+\end{bmatrix} \beta
+\end{align}
+$$
+```{r}
+x <- matrix(data = c(rep(1, 15), 
+                     data$weight, 
+                     data$displacement), nrow = 15, byrow = F)
+xt <- t(x)
+xtx_inv <- solve(xt %*% x)
+```
+
+```{r}
+data
+```
+
+Through the fit equation, we have that
+$$
+\hat\beta \approx 
+\begin{bmatrix}
+36.5 \\
+-0.000308 \\
+-0.0718
+\end{bmatrix} .
+$$
+
+Additionally, $t_{\alpha/2, 13} = 2.160$ and $S = $ `r ((sse <- sum((fitted(fit2) - data$mpg)^2))/(15-2)) %>% sqrt()`.
+
+Substituting each element into the equation
+$$
+\mathbf a' \hat\beta \pm t_{\alpha/2}S\sqrt{\mathbf {a'(X'X)^{-1}a}},
+$$
+
+we get
+
+```{r}
+a <- c(1, 3000, 150) %>% as.matrix()
+at <- t(a)
+s <- ((sse <- sum((fitted(fit2) - data$mpg)^2))/(15-2)) %>% sqrt()
+bhat <- c(36.5, -0.000308, -0.0718) %>% as.matrix()
+at %*% bhat + 2.16* s * sqrt(at %*% xtx_inv %*% a)
+at %*% bhat - 2.16* s * sqrt(at %*% xtx_inv %*% a)
+```
+
+The 95% confidence interval for $\mathbb E[Y|x_1 = 3000, x_2 = 150]$ is $(22.458, 27.154)$. 
+
+Similarly, the prediction interval can be given by 
+
+$$
+\mathbf a' \hat\beta \pm t_{\alpha/2}S\sqrt{1 + \mathbf {a'(X'X)^{-1}a}}
+$$
+
+```{r}
+at %*% bhat + 2.16* s * sqrt(1 + at %*% xtx_inv %*% a)
+at %*% bhat - 2.16* s * sqrt(1 + at %*% xtx_inv %*% a)
+```
+
+The above code yields the prediction interval to be $(19.456, 30.156)$. 
+
+This means that when *weight* is 3000 and *engine displacement* is 150, then the mean value of *mpg* with 95% confidence is between 22.458 and 27.154 miles per gallon. On the other hand, with those same values of *weight* and *engine displacement*, the predicted value of *mpg* with 95% confidence is between 19.456 and 30.156.
+
+  (d) Which model constitutes the "complete" model and which the "reduced" model? Can $x_2$ be dropped from the model without losing predictive information? Test at the $\alpha = 0.05$ significance level.
+  
+  Our hypotheses:
+  
+$$
+H_0: \beta_2 = 0, \qquad H_\alpha: \beta_2 \neq 0
+$$
+  
+  The complete model:
+
+$$
+mpg_i = \beta_0 + \beta_1 x_{weight,i} + \beta_2 x_{displacement,i} + \epsilon_i
+$$
+
+  The reduced model:
+  
+$$
+mpg_i = \beta_0 + \beta_1 x_{weight,i} + \epsilon_i
+$$
+
+We can perform an F test:
+
+$$
+F = \frac{(SSE_R - SSE_C) / (k - g)}{SEE_C/(n - k - 1)}
+$$
+
+First, we need to find the $SSE$ of both. We use an ANOVA table:
+
+```{r}
+anova(fit1)
+anova(fit2)
+```
+
+We see that $SSE_C = 64.386$ and $SSE_R = 127.44.$
+
+$$
+\begin{align}
+F &= \frac{(SSE_R - SSE_C) / (k - g)}{SEE_C/(n - k - 1)} \\
+&= \frac{(127.44 - 64.386)/(2 - 1)}{64.386/(15 - 2 - 1)} \\
+&= 11.75175
+\end{align}
+$$
+
+The test statistic follows an F distribution with $df_1 = 1, df_2 = 12$ under the null hypothesis. The p-value is $0.005$, which is less than $0.05$, so we reject the null. That is, there is insufficient evidence to say that we can drop $x_2$ from the model without losing predictive information.
+
+3. Consider your answers to the previous questions, then answer the following.
+Suppose that the true population relationship is given by:
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon
+$$
+
+Further suppose that there is a relationship between $x_1$ and $x_2$ given by:
+
+$$
+x_2 = \gamma_0 + \gamma_1 x_1 + \delta
+$$
+where $\gamma_1$ and $\beta_2$ are non-zero.
+
+  (a) Find the expected values of $\beta_0$ and $\beta_1$ if the independent variable $x_2$ is omitted from the regression.
+  
+  We have $\hat\beta_0$ and $\hat\beta_1$ defined as follows:
+  
+$$
+\begin{align}
+\hat\beta_0 &= \bar y - \hat\beta_1\bar x \\
+\hat\beta_1 &= \frac{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)(y_i - \bar y)}{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2}.
+\end{align}
+$$
+
+So, we have
+
+
+$$
+\begin{aligned}
+\mathbb E \hat\beta_0 &= \mathbb E \left[ \bar y - \hat\beta_1\bar x \right ] \\ 
+
+
+\mathbb E \hat\beta_1 &= \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)(y_i - \bar y)}{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] \\
+
+&= \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)(\beta_0 + \beta_1x_i + \epsilon_i - (\beta_0 + \beta_1 \bar x + \bar \epsilon_i))}{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] \\
+
+&= \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)(\beta_1x_i + \epsilon_i - (\beta_1 \bar x + \bar \epsilon))}{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] \\
+
+&= \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)(\beta_1x_i - \beta_1 \bar x + \epsilon_i - \bar \epsilon))}{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] \\
+
+&= \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)(\beta_1(x_i - \bar x) + (\epsilon_i - \bar \epsilon))}{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] \\
+
+&= \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}\beta_1(x_i - \bar x)^2 + \displaystyle \sum_{i = 1}^{n}(\epsilon_i - \bar \epsilon)(x_i - \bar x)}{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] \\
+
+&= \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}\beta_1(x_i - \bar x)^2 }{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] + 
+    \mathbb E \left[ \frac{\displaystyle \sum_{i = 1}^{n}(\epsilon_i - \bar \epsilon)(x_i - \bar x) }{\displaystyle \sum_{i = 1}^{n}(x_i - \bar x)^2} \right ] \\
+    
+&= \beta_1 \\
+
+\implies \mathbb E \hat\beta_0 &= \mathbb E[\bar y ] - \mathbb E [ \hat\beta_1 \bar x] \\
+&= \mathbb E \left[ \beta_0 + \beta_1 \bar x + \bar \epsilon - \beta_1 \bar x \right] \\
+&= \mathbb E \left[ \beta_0 + \bar\epsilon \right] \\
+&= \mathbb E \beta_0 + 0 \\
+&= \beta_0
+
+\end{aligned}
+$$
+
+  (b) Calculate the bias (if any) of $\beta_0$ and $\beta_1$ when $x_2$ is omitted.
+  
+  Since $\mathbb E \hat\beta_0 = \beta_0$ and $\mathbb E \hat\beta_1 = \beta_1$, we say they are both unbiased (bias $= 0$.)
+  
+  (c) What values of $\gamma_1$ and $\beta_2$ would result in $\beta_0$ and $\beta_1$ remaining unbiased?
+  
+  Since we have 
+  
+$$
+\begin{align}
+y &= \beta_0 + \beta_1 x_1 + \beta_2(\gamma_0 + \gamma_1 x_1 + \delta) + \epsilon \\
+&= \beta_0 + \beta_1 x_1 + \beta_2\gamma_0 + \beta_2\gamma_1 x_1 + \beta_2\delta + \epsilon,
+\end{align}
+$$
+
+we want to find some choices $\beta_2$ and $\gamma_1$ that equate the above equation to $y = \beta_0 + \beta_1 x_1 + \epsilon.$
+
+A clear choice is $\beta_2 = 0$. We can also set $\beta_2(\gamma_0 + \gamma_1 x_1 + \delta) = 0.$ We find that the choice of $\gamma_1$ that satisfies this is $\gamma_1 = - \frac{\gamma_0 + \delta}{x_1}$
+
+  (d) In light of the above:
+    
+  i. What assumption of linear regression is being violated in Question 1? Is this assumption met in Question 2?
+    
+  The assumption of homoscedasticity is violated in Question 1. After removing outliers, the assumption may be considered to not be violated in Question 2, however the answer may differ depending on the analyst.
+  
+```{r}
+fit1 %>% plot()
+fit2 %>% plot()
+```
+    
+  ii. In Question 1, are the estimates of $\beta_0$ and $\beta_1$ BLUE? Why or why not?
+    
+  The estimates of $\beta_0$ and $\beta_1$ are not BLUE since the assumption of homoscedasticity is not met.
+  
+  
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
