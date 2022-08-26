@@ -1,0 +1,101 @@
+---
+title: "PSTAT 120C HW 3"
+author: "TJ Sipin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+```
+
+# Reading
+
+### Define the ANOVA procedure in your own words. How does the model detect a difference in means by comparing variances?
+
+The ANOVA procedure aims to explain and assign the amount of variation of responses to each independent variable in order to identify which ones are important and how they affect the response. 
+
+Given two treatments/populations and $n_1 = n_2$, we can find the $SST$:
+
+$$
+SST = n_1 \displaystyle \sum_{i = 1}^2 (\bar Y_i - \bar Y)^2 = \frac{n_1}{2} (\bar Y_1 - \bar Y_2)^2.
+$$
+
+If $SST$ is large, then we know that $|\bar Y_1 - \bar Y_2|$ is large, giving evidence that a difference in means is large just by comparing variances. 
+
+### Write equations for the following in a general one-way ANOVA:
+
+#### The total sum of squares:
+
+$$
+SST = \displaystyle \sum_{i = 1}^k \sum_{j = 1}^{n_i} (Y_{ij} - \bar Y)^2
+$$
+
+#### The sum of squares for treatment
+
+$$
+SS_{Treatment} = \displaystyle \sum_{i = 1}^k n_k (\bar Y_i - \bar Y)^2 
+$$
+
+#### The sum of squares for error
+
+$$
+SSE = \displaystyle \sum_{i = 1}^ k \sum_{j = 1}^{n_i} (Y_{ij} - \bar Y_i)^2 = \sum_{i = 1}^k (n_i - 1)S_i ^2
+$$
+
+### What are the null and alternative hypotheses for a one-way ANOVA?
+
+$$
+\begin{align}
+H_0&: \mu_1 = \mu_2 = \dots = \mu_k \iff H_0: \tau_1 = \tau_2 = \dots = \tau_k = 0 \\
+H_\alpha &: \mu_i \neq \mu_j \text{ for some } i \neq j \iff \tau_i \neq 0 \text{ for some } i \in [1, k]
+\end{align}
+$$
+
+### What assumptions should be met when we conduct an ANOVA F-test?
+
+- Independent random samples to be selected from the $k$ populations.
+- The $k$ populations are normally distributed with equal variances $\sigma^2$ and means $\mu_1, \mu_2, \dots, \mu_k$.
+
+### Write the general statistical model for a one-way ANOVA.
+
+For $i = 1, \dots, k$ and $j = 1, \dots, n_i$,
+
+$$
+Y_{ij} = \mu + \tau_i + \epsilon_{ij},
+$$
+where 
+
+- $Y_{ij}$ is the $j$th observation from population (treatment) $i$
+- $\mu$ is the overall mean
+- $\tau_i$ is the nonrandom effect of treatment $i$, where $\sum_{i = 1} ^ k \tau_i = 0$
+- $\epsilon_{ij}$ are the random error terms such that $\epsilon_{ij}$ are independent normally distributed random variables with $\mathbb{E}(\epsilon_{ij}) = 0$ and $\text{var}(\epsilon_{ij}) = \sigma^2$.
+
+### Write the general statistical model for a two-way ANOVA.
+
+For $i = 1, \dots, k$ and $j = 1, \dots, b$,
+
+$$
+Y_{ij} = \mu + \tau_i + \beta_j + \epsilon_{ij},
+$$
+
+- $Y_{ij}$ is the observation on treatment $i$ in block $j$
+- $\mu$ is the overall mean
+- $\tau_i$ is the nonrandom effect of treatment $i$, where $\sum_{i = 1} ^ k \tau_i = 0$
+- $\beta_j$ is the nonrandom effect of block $j$, where $\sum_{j = 1}^b \beta_j = 0$
+- $\epsilon_{ij}$ are the random error terms such that $\epsilon_{ij}$ are independent normally distributed random variables with $\mathbb{E}(\epsilon_{ij}) = 0$ and $\text{var}(\epsilon_{ij}) = \sigma^2$.
+
+```{r}
+
+```
+
+
+
+# Practice
+
+
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
