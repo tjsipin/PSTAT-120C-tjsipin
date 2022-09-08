@@ -48,71 +48,85 @@ Additionally, nonparametric statistics can be used for observations that are dif
 
 1. The following data record the number of ear infections each of 7 swimmers had before ($X_i$) taking a medication designed to prevent infections and after ($Y_i$) taking the medication. Using the data provided, answer the following questions:
 
-| Swimmer | $X_i$ | $Y_i$ | $D_i$ | Sign |
-|:---:|:---:|:---:|:---:|:---:|
-| A | 3 | 2 |  |  |
-| B | 0 | 1 |  |  |
-| C | 5 | 4 |  |  |
-| D | 4 | 0 |  |  |
-| E | 2 | 1 |  |  |
-| F | 4 | 3 |  |  |
-| G | 3 | 1 |  |  |
-
+  | Swimmer | $X_i$ | $Y_i$ | $D_i$ | Sign |
+  |:---:|:---:|:---:|:---:|:---:|
+  | A | 3 | 2 |  |  |
+  | B | 0 | 1 |  |  |
+  | C | 5 | 4 |  |  |
+  | D | 4 | 0 |  |  |
+  | E | 2 | 1 |  |  |
+  | F | 4 | 3 |  |  |
+  | G | 3 | 1 |  |  |
+  
 (a) Consider $D_i = X_i - Y_i$. Fill in the $D_i$ column. Then fill in the "Sign" column with the sign of the differences.
-
-| Swimmer | $X_i$ | $Y_i$ | $D_i$ | Sign |
-|:---:|:---:|:---:|:---:|:---:|
-| A | 3 | 2 | 1 | + |
-| B | 0 | 1 | -1 | - |
-| C | 5 | 4 | 1 | + |
-| D | 4 | 0 | 4 | + |
-| E | 2 | 1 | 1 | + |
-| F | 4 | 3 | 1 | + |
-| G | 3 | 1 | 2 | + |
-
+  
+  | Swimmer | $X_i$ | $Y_i$ | $D_i$ | Sign |
+  |:---:|:---:|:---:|:---:|:---:|
+  | A | 3 | 2 | 1 | + |
+  | B | 0 | 1 | -1 | - |
+  | C | 5 | 4 | 1 | + |
+  | D | 4 | 0 | 4 | + |
+  | E | 2 | 1 | 1 | + |
+  | F | 4 | 3 | 1 | + |
+  | G | 3 | 1 | 2 | + |
+  
 (b) Use the *sign test* to conduct a hypothesis test assessing whether there is a difference between the population distributions of $X$ and $Y$.
-
-- Write the null and alternative hypotheses in words and in symbols.;
-
-  $H_0: p = 0.50,$ where $p = P(X > Y)$, or it is equally likely for $X$ to be greater than $Y$ as it is for $Y$ to be greater than $X$.
-
-- Calculate a test statistic $M$;
-
-  $M = $ # of positive differences where $D_i = X_i - Y_i$.
   
-  $$
-  M = 6
-  $$
+  - Write the null and alternative hypotheses in words and in symbols.;
   
-- Calculate the relevant binomial probability;
-  $$
-  \begin{align}
-  P(M \ge 6) &= {7 \choose 6} 0.5 ^6 0.5 ^1 + {7 \choose 7} 0.5^7 0.5 ^0 \\
-  &= 7(0.5^7) + 1(0.5^7) \\
-  &= 0.0625 \\
-  &= \frac{1}{16} \\
-  P(M \le 1) &= {7 \choose 1}0.5^1 0.5^6 + {7 \choose 0} 0.5^7 \\
-  &= 7(0.5^7) + 0.5^7 \\
-  &= 0.0625 \\
-  &= \frac{1}{16}
-  \end{align}
-  $$
+    $H_0: p = 0.50,$ where $p = P(X > Y)$, or it is equally likely for $X$ to be greater than $Y$ as it is for $Y$ to be greater than $X$.
   
-  So the two-tailed p-value for $M = 6, n = 7$ is $\frac{1}{8} = 0.125.$
+  - Calculate a test statistic $M$;
   
-- Can you reject the null hypothesis, assuming $\alpha = 0.05$?
-
-  Since $p = 0.125$, we would fail to reject since $p > 0.05$.
+    $M = $ # of positive differences where $D_i = X_i - Y_i$.
+    
+    $$
+    M = 6
+    $$
+    
+  - Calculate the relevant binomial probability;
+    $$
+    \begin{align}
+    P(M \ge 6) &= {7 \choose 6} 0.5 ^6 0.5 ^1 + {7 \choose 7} 0.5^7 0.5 ^0 \\
+    &= 7(0.5^7) + 1(0.5^7) \\
+    &= 0.0625 \\
+    &= \frac{1}{16} \\
+    P(M \le 1) &= {7 \choose 1}0.5^1 0.5^6 + {7 \choose 0} 0.5^7 \\
+    &= 7(0.5^7) + 0.5^7 \\
+    &= 0.0625 \\
+    &= \frac{1}{16}
+    \end{align}
+    $$
+    
+    So the two-tailed p-value for $M = 6, n = 7$ is $\frac{1}{8} = 0.125.$
+    
+  - Can you reject the null hypothesis, assuming $\alpha = 0.05$?
   
+    Since $p = 0.125$, we would fail to reject since $p > 0.05$.
+    
 (c) Use the Wilcoxon signed-rank test to conduct a hypothesis test assessing whether there is a difference between the population distribution $X$ and $Y$.
-
-- Calculate a test statistic $T$;
-
-  $$
-  \begin{align}
   
-  \end{align}
-  $$
+  - Calculate a test statistic $T$;
+  
+    $$
+    \begin{align}
+    T^+ &= 1.2 + 1.2 + 7 + 1.2 + 1.2 + 6 = 17.8 \\
+    T^- &= 1.2 \\
+    T &= \min(17.8, 1.2) = 1.2
+    \end{align}
+    $$
+    
+  - Determine the appropriate critical value for $\alpha = 0.05$ (or as close as possible to 0.05);
+  
+    Since $n = 7$, our critical value is 2.
+    
+  - Can you reject the null hypothesis?
+  
+    We reject if $T \leq T_0 = 2$. Since $T = 1.2$, then we reject the null hypothesis and conclude that there is a difference in ear infections among swimmers before taking medication and after.
+
+(d) Were you able to reject the null with one test, both tests, or neither? If you rejected with one test and not the other, what do you think contributed to this difference?
+
+  We rejected the null hypothesis for the Wilcoxon signed-rank test. This is 
 
 ```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
