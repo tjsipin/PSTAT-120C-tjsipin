@@ -126,7 +126,27 @@ Additionally, nonparametric statistics can be used for observations that are dif
 
 (d) Were you able to reject the null with one test, both tests, or neither? If you rejected with one test and not the other, what do you think contributed to this difference?
 
-  We rejected the null hypothesis for the Wilcoxon signed-rank test. This is 
+  We rejected the null hypothesis for the Wilcoxon signed-rank test. For the sign test, we are looking purely at the sign of the difference, rather than the ranks, so there is a sense of generality and less information for the former. This may have led to less inferential power, leading us to fail to reject since we lacked evidence to reject, as opposed to the Wilcoxon signed-rank test.
+  
+2. The coded values for a measure of brightness in paper (light reflectivity), prepared by two different processes, are as shown in the accompanying table for samples of size **9** drawn randomly from each of the two processes. Do the data present sufficient evidence to indicate a difference in locations of brightness measurements for the two processes? Give the attained significance level.
+
+| **Process A** | **Process B** |
+|---------------|---------------|
+| 6.1           | 9.1           |
+| 9.2           | 8.2           |
+| 8.7           | 8.6           |
+| 8.9           | 6.9           |
+| 7.6           | 7.5           |
+| 7.1           | 7.9           |
+| 9.5           | 8.3           |
+| 8.3           | 7.8           |
+| 9.0           | 8.9           |
+
+  a. Answer the question by using the **Mann-Whitney U test**.
+  
+  
+
+
 
 ```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
