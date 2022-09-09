@@ -116,13 +116,24 @@ Additionally, nonparametric statistics can be used for observations that are dif
     \end{align}
     $$
     
+  It could also be that
+  
+  $$
+  \begin{align}
+    T^+ &= 3 + 3 + 7 + 3 + 3 + 6 = 25\\
+    T^- &= 3 \\
+    T &= \min(17.8, 3) = 3
+  \end{align}
+  $$
+    
   - Determine the appropriate critical value for $\alpha = 0.05$ (or as close as possible to 0.05);
   
     Since $n = 7$, our critical value is 2.
     
   - Can you reject the null hypothesis?
   
-    We reject if $T \leq T_0 = 2$. Since $T = 1.2$, then we reject the null hypothesis and conclude that there is a difference in ear infections among swimmers before taking medication and after.
+    We reject if $T \leq T_0 = 2$. In the case that $T = 1.2$, then we reject the null hypothesis and conclude that there is a difference in ear infections among swimmers before taking medication and after.
+    In the case that $T = 3$, we fail to reject the null hypothesis.
 
 (d) Were you able to reject the null with one test, both tests, or neither? If you rejected with one test and not the other, what do you think contributed to this difference?
 
@@ -142,11 +153,164 @@ Additionally, nonparametric statistics can be used for observations that are dif
 | 8.3           | 7.8           |
 | 9.0           | 8.9           |
 
-  a. Answer the question by using the **Mann-Whitney U test**.
+(a) Answer the question by using the **Mann-Whitney U test**.
+    
+  Doing this by hand would be slightly tedious, so instead we work in R. However, We use the following equation for our test statistic $U$:
   
+  $$
+  \begin{align}
+  U &= n_1 n_2 + \frac{n_1(n_1 + 1)}{2} - W \\
+  &= 9(9) + \frac{9(10)}{2} - W \\
+  &= 81 + 45 - W
+  \end{align}
+  $$
   
+```{r}
+proc_a <- c(6.1, 9.2, 8.7, 8.9, 7.6,
+            7.1, 9.5, 8.3, 9.0)
+proc_b <- c(9.1, 8.2, 8.6, 6.9, 7.5,
+            7.9, 8.3, 7.8, 8.9)
+total <- c(proc_a, proc_b)
+sort(total)
+```
+
+  Using the `sort()` function, we find that $W = 1 + 3 + 5 + 9.5 + 12 + 13.5 + 15 + 17 + 18 = 94$, so $U = 32$. Using Table 8, Appendix 3 in the book, we find that $U_0 = 21.$ Since $U = 32 \not\leq U_0 = 21,$ we fail to reject the null using $\alpha = 0.10$. 
+  
+```{r}
+wilcox.test(proc_b, proc_a)
+```
+
+This is in line with the `wilcox.test()` function. Our p-value is higher than $0.10$ at $0.4795$, so we fail to reject the null. Thus, we conclude that there is not sufficient evidence to indicate no difference in locations of brightness measurements for the two processes.
+  
+(b) Answer the question by using the independent samples $t-test$.
+
+  We calculate the standard deviation $S_p$ for the independent sample t-test by using the formula:
+
+  $$
+  \begin{align}
+  S_p &= \sqrt{\frac{\sum (X_{1i} - \bar X_1)^2 + \sum (X_{2i} - \bar X_2)^2}{n_1 + n_2 - 2}} \\
+  \end{align}
+  $$
+
+```{r}
+sse_a <- 0
+for (i in proc_a) {
+  sse_a <- sse_a + (i - mean(proc_a))^2
+}
+sse_b <- 0
+for (i in proc_b) {
+  sse_b <- sse_b + (i - mean(proc_b))^2
+}
+```
+  
+  We find that 
+
+  $$
+  S_p = \sqrt{\frac{10.02 + 3.86}{9 + 9 - 2}} = 0.9313968.
+  $$
+  
+  We calculate the value of the independent sample t-test by using the formula
+  
+  $$
+  t = \frac{\bar X_1 - \bar X_2}{S_p} \sqrt{\frac{n_1 n_2}{n_1 + n_2}} = \frac{\bar X_1 - \bar X_2}{S_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}} = 0.304.
+  $$
+  
+  At the $0.10$ significance level for this two-tailed t-test, our critical value is $1.746$ with 16 degrees of freedom. Since $t = 0.304 < t_0 = 1.746$, we fail to reject the null hypothesis. We can check this in R:
+  
+```{r}
+t.test(proc_a, proc_b)
+```
+
+Since our p-value is 0.766, which is higher than 0.10, we fail to reject the null hypothesis that there is no difference in locations of brightness measurements for the two processes. 
+
+(c) Provide the null and alternative hypotheses for parts *a* and *b*, along with any assumptions made for each test.
+
+  $H_0:$ there is no difference in locations of brightness measurements for the two processes.
+  
+  $H_a:$ there is a difference in locations of brightness measurements for the two processes.
+
+  The assumptions made for Mann-Whitney U are that we need a continuous or ordianl outcome variable, one independent variable with two groups, data that are similar in shape across groups, random sampling, independence, and sufficient sample size.
+  
+  The assumptions made for the independent sample t-test are that the data must be moderately normal and that $n_1$ and $n_2$ must be equal (or nearly equal).
+
+3. Consider the Friedman statistic
+
+$$
+F_r = \frac{12b}{k(k+1)}\displaystyle \sum_{i = 1}^k (\bar R_i - \bar R)^2.
+$$
+
+Square each term in the sum, and show that an alternative form of $F_r$ is 
+
+$$
+F_r = \frac{12}{bk(k+1)}\displaystyle \sum_{i=1}^k R_i^2 - 3b(k+1).
+$$
+
+*Hint:* Recall that $\bar R_i = \frac{R_i}{b}$ and $\bar R = \frac{k + 1}{2}$, and note that $\displaystyle\sum_{i=1}^k R_i = \frac{bk(k+1)}{2}$.
 
 
+  $$
+  \begin{align}
+  F_r &= \frac{12b}{k(k+1)}\displaystyle \sum_{i = 1}^k (\bar R_i - \bar R)^2 \\
+  &= \frac{12b}{k(k+1)}\displaystyle \sum_{i = 1}^k (\bar R_i^2 -2 \bar R_i \bar R + \bar R^2) \\
+  &= \frac{12b}{k(k+1)}\left[\displaystyle \sum_{i = 1}^k \frac{R_i^2}{b^2} - 2\frac{(k+1)}{2}\displaystyle \sum_{i = 1}^k \bar R_i + \displaystyle \sum_{i = 1}^k \bar R^2 \right] \\
+  &= \frac{12b}{k(k+1)}\displaystyle \sum_{i = 1}^k R_i ^2 - \frac{12b}{k(k+1)}\frac{(k + 1)}{b} \frac{bk(k+1)}{2} + \frac{12b}{k(k+1)}\frac{k(k+1)(k+1)}{4} \\
+  &= \frac{12 \displaystyle\sum_{i=1}^k R_i^2}{bk(k+1)} - 6b(k+1) + 3b(k+1) \\
+  &= \frac{12}{bk(k+1)}\displaystyle\sum_{i=1}^k R_i^2 - 3b(k+1)
+  \end{align}
+  $$
+
+4. A quality control chart has been maintained for a measurable characteristic of items taken from a conveyor belt at a fixed point in a production line. The measurements obtained today, in order of time from top left to bottom right (68.2 the earliest recorded and 70.1 the latest), are as follows:
+
+$$
+\begin{matrix}
+68.2 & 71.6 & 69.3 & 71.6 & 70.4 & 65.0 & 63.6 & 64.7 \\
+65.3 & 64.2 & 67.6 & 68.6 & 66.8 & 68.9 & 66.8 & 70.1
+\end{matrix}
+$$
+  (a) Classify the measurements in this time series according to whether each is above or below the sample mean and determine, using the **runs test**, whether there are runs of high or low measurements, suggesting a lack of stability in the production process.
+  
+  The sample mean is `r mean(c(68.2, 71.6, 69.3, 71.6, 70.4, 65.0, 63.6, 64.7, 65.3, 64.2, 67.6, 68.6, 66.8, 68.9, 66.8, 70.1))`. This means that our sample can be represented as
+  
+  $$
+  \begin{matrix}
+  H & H & H & H & H & L & L & L \\
+  L & L & L & H & L & H & L & H
+  \end{matrix}
+  $$
+  
+  Our test statistic $R$ is the number of runs, so $R = 7$. $n_1$ is the number of high elements, so $n_1 = 8$ and $n_2$, the number of low elements is also $8$. There are $Y_1 = 4$ runs of highs and $Y_2 = 3$ runs of lows. The maximum possible number of runs $m$ is $2n_1 = 16$ since $n_1 = n_2$. Getting as close to $\alpha = 0.05$ as possible without exceeding it, we find that our critical values are $4$ and $13$ since $\mathbb P(R \leq 3) = 0.009$ and $\mathbb P(R \leq 13) = 0.991$. We would reject the hypothesis that the production process randomly produces high and low measurements if $R \leq 3$ or $R \geq 14$ at the $\alpha = 0.018$ significance level. Since $R = 7$, we fail to reject the null hypothesis, so we conclude that there is not enough evidence to say that there is a lack of stability in the production process.
+  
+  (b) Divide the time period into two equal parts and compare the means of each, using the *t-test*, with $\alpha = 0.05$. Do the data provide evidence of a shift in the mean level of the quality characteristic? Explain.
+  
+  We divide the time period by splitting between the two rows. We call $R_1$ the first row and $R_2$ the second. So the means $\bar R_1 = 68.05$ and $\bar R_2 = 67.2875$.
+  
+  We find $S_p$:
+  
+  $$
+  \begin{align}
+  S_p &= \sqrt{\frac{\sum (X_{1i} - \bar X_1)^2 + \sum (X_{2i} - \bar X_2)^2}{n_1 + n_2 - 2}} \\
+  &= 2.66
+  $$
+```{r}
+R_1 <- c(68.2, 71.6, 69.3, 71.6, 70.4, 65.0, 63.6, 64.7)
+R_2 <- c(65.3, 64.2, 67.6, 68.6, 66.8, 68.9, 66.8, 70.1)
+sum_R_1 <- 0
+sum_R_2 <- 0
+for (i in R_1) {
+  sum_R_1 = sum_R_1 + (i - mean(R_1))^2
+}
+for (i in R_2) {
+  sum_R_2 = sum_R_2 + (i - mean(R_2))^2
+}
+S_p = sqrt((sum_R_1 + sum_R_2)/(8 + 8 - 2))
+```
+
+  We find the test statistic $t$:
+  $$
+  t = \frac{\bar X_1 - \bar X_2}{S_p} \sqrt{\frac{n_1 n_2}{n_1 + n_2}} = \frac{\bar X_1 - \bar X_2}{S_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}} = \frac{0.7625}{2.658259\sqrt{\frac{2}{8}}} = 0.5736838.
+  $$
+  
+  At the $\alpha = 0.05$ significance level, our critical value $T_0 = 2.145$, which is greater than our test statistic, so we fail to reject the null hypothesis, so there is a shift in the mean level of the quality characteristic.
 
 ```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
