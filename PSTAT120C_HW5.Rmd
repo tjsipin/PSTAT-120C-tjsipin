@@ -1,5 +1,5 @@
 ---
-title: "PSTAT 120C HW 4"
+title: "PSTAT 120C HW 5"
 author: "TJ Sipin"
 date: "`r Sys.Date()`"
 output: html_document
