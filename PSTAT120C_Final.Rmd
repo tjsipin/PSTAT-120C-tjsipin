@@ -1,0 +1,76 @@
+---
+title: "PSTAT 120C Final"
+author: "TJ Sipin"
+date: "9/9/2022"
+output: html_document
+---
+
+# PSTAT 120C Final
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+
+A study to determine the effectiveness of a drug, or serum, for the treatment of arthritis resulted in the comparison of two groups, each consisting of 400 arthritic patients. One group was inoculated with the serum, whereas the other received a placebo (an inoculation that appears to contain serum but actually is not active). After a period of time, each person in the study was asked whether their arthritic condition had improved, and the observed results are presented in the accompanying table. The question of interest is: *Do these data present evidence to indicate that the proportion of arthritic individuals who improved differs depending on whether or not they received the drug?*
+
+|  Condition   | Treated | Untreated |
+|:------------:|:-------:|:---------:|
+|   Improved   |   234   |    148    |
+| Not improved |   166   |    252    |
+
+(a) Conduct a hypothesis test using the $X^2$ test statistic, with $\alpha = 0.05$. Report (i) the null and alternative hypotheses; (ii) the expected cell counts; (iii) the test statistic; (iv) the critical value; (v) the *p*-value; and (vi) the conclusion.
+
+**Solution.**
+
+We plan on testing if there is a difference in proportion of arthritic individuals. So our null hypothesis (i) is $H_0:$ the proportion of arthritic individuals who improved do not differ depending on whether they received the drug. The alternative hypothesis is $H_a:$ the proportion of arthritic individuals who improved differ depending on whether they received the drug.
+
+For $i = 1,2$ and $j = 1,2$ and with $n = 800$, the expected cell counts (ii) are the following:
+
+$$
+\mathbb E (\hat n_{ij}) = \frac{r_i c_j}{n}
+$$
+
+|  Condition   | Treated | Untreated |
+|:------------:|:-------:|:---------:|
+|   Improved   |   191   |    191    |
+| Not improved |   209   |    209    |
+
+The $X^2$ test statistic (iii) is given by the following:
+
+$$
+\begin{align}
+X^2 &= \displaystyle \sum_{j = 1}^c \sum_{i = 1}^r \frac{[n_{ij} - \hat{\mathbb E(n_{ij})]}^2}{\hat{\mathbb E(n_{ij})}} \\
+&= \displaystyle \sum_{j = 1}^c \sum_{i = 1}^r \frac{[n_{ij} - \frac{r_i c_j}{n}]^2}{\frac{r_i c_j}{n}} \sim \chi^2_{(r-1)(c-1)} \\
+&= 
+\frac{\left[234 - \frac{(382)(400)}{800}\right]^2}{\frac{(382)(400)}{800}} +
+\frac{\left[148 - \frac{(382)(400)}{800}\right]^2}{\frac{(382)(400)}{800}} + 
+\frac{\left[166 - \frac{(418)(400)}{800}\right]^2}{\frac{(418)(400)}{800}} +
+\frac{\left[252 - \frac{(418)(400)}{800}\right]^2}{\frac{(418)(400)}{800}} \\
+&= 37.1
+\end{align}
+$$
+
+We have 1 degree of freedom so our critical value (iv) is $\chi^2_{1,0.05} = 3.841.$ We can obtain the *p*-value (v) by using the function `pchisq(q = 37.1, df = 1, lower.tail = F)`, which yields us $1.12 \times 10^{-9}$, which is much smaller than $0.05$. Thus, (vi) we would reject the null hypothesis, so there is evidence that there is improvement among individuals who received the drug.
+
+(b) Using the *Z*-statistic, test the hypothesis that the proportion of treated persons who improved is equal to the proportion of untreated persons who improved, with $\alpha = 0.05$. *Hint:* Express each proportion as a mean. <br> <br> Report (i) the null and alternative hypotheses; (ii) the test statistic; (iii) the critical value; (iv) the *p*-value; and (v) the conclusion.
+
+**Solution.**
+
+Our null hypothesis is (i) $H_0: \theta_T = \theta_U$ and our alternative hypothesis is $H_A: \theta_T \neq \theta_U$, where $\theta_T$ is the proportion of treated persons who improved and $\theta_U$ is the proportion of the untreated persons who improved.
+
+Our test statistic (ii) is $Z = \frac{\hat p_1 - \hat p_2}{\sqrt{\hat p \hat q \left( \frac{1}{n_1} + \frac{1}{n_2} \right)}}$. We calculate $Z$ with $\hat p_1 = \frac{\text{Treated and Improved}}{\text{Total Treated}}$, $\hat p_2 = \frac{\text{Untreated and Improved}}{\text{Total Untreated}},$ $\hat p = \frac{\text{Total Improved}}{\text{N}}$, and $\hat q = 1 - \hat p$:
+
+$$
+\begin{align}
+Z &= \frac{\hat p_1 - \hat p_2}{\sqrt{\hat p \hat q \left( \frac{1}{n_1} + \frac{1}{n_2} \right)}} \\
+&= \frac{0.585 - 0.37}{\sqrt{(0.4775)(0.5225)\left(\frac{1 + 1}{400}\right)}} \\
+&= 6.09.
+\end{align}
+$$
+
+With $\alpha = 0.05$, our critical value (iii) is $1.960$, so we reject $H_0$ if $Z \leq -1.960$ or $Z \geq 1.960$. Our *p*-value (iv) is given by `pnorm(6.09)` minus $1$, which gives a value of 0. Thus, (v) we reject $H_0$ and conclude that there is strong evidence that the proportion of treated persons who improved is different compared to the proportion of untreated persons who improved.
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
