@@ -160,17 +160,18 @@ The equality at $(*)$ is possible since $\beta_j$s and $\epsilon_{ij}$s are inde
 
 $$
 \begin{align}
-Cov(Y_{ij}, Y_{i'j}) &= \mathbb E \left[ (Y_{ij} - \mathbb E [Y_{ij}])(Y_{i'j} - \mathbb E [Y_{i'j}])\right] \\
-&= \mathbb E \left[ (\mu + \tau_i + \beta_j + \epsilon_{ij} - (\mu + \tau_i))(\mu + \tau_{i'} + \beta_j + \epsilon_{i'j} - (\mu + \tau_{i'}))\right] \\
-&= \mathbb E \left[ (\beta_j + \epsilon_{ij})(\beta_j + \epsilon_{i'j}) \right] \\
-&= \mathbb E \left[ (\beta_j^2 + \beta_j \epsilon_{i'j} + \beta_j \epsilon_{ij} + \epsilon_{ij}\epsilon_{i'j}) \right] \\
-&= 0
+Cov(Y_{ij}, Y_{i'j}) &= Cov(\mu + \tau_i + \beta_j + \epsilon_{ij}, \mu + \tau_i + \beta_j + \epsilon_{i'j}) \\ 
+&= Cov(\beta_j + \epsilon_{ij}, \beta_j + \epsilon_{i'j}) \\
+&= Cov(\beta_j, \beta_j) + Cov(\beta_j, \epsilon_{i'j}) + Cov(\epsilon_{ij}, \beta_j) + Cov(\epsilon_{ij}, \epsilon_{i'j}) \\
+&= Cov(\beta_j, \beta_j) + 0 + 0 + 0 \\
+&= var(\beta_j) \\
+&= \sigma_B^2
 \end{align}
 $$
 
 (c) Two random variables that have a joint normal distribution are independent if and only if their covariance is 0. Use the result from part (b) to determine the conditions under which two observations from the same block are independent of one another.
 
-The mean $\mu$ and each treatment effect must be held constant. It must also hold that $\mathbb E[\beta_j] = 0$ and $\mathbb E[\epsilon_{ij}] = 0$ for all $i,j$.
+The mean $\mu$ and each treatment effect must be held constant. It must also hold that $\sigma_B^2 = 0.$ 
 
 (d) Find the expected value and variance of $Y_{ij}$
 
@@ -248,8 +249,8 @@ twin_df %>%
 We have our null hypothesis $H_0:$ the schools are the same in academic effectiveness, or in mathematical terms, $H_0: P(X > Y) = p = 0.5,$ where $X$ is school A's academic effectiveness and $Y$ is school B's academic effectiveness. We produce the following signs:
 
 ```{r}
-signs <- c('+','+','-','+','+',
-           '-','+','+','-','+')
+signs <- c('\\+','\\+','\\-','\\+','\\+',
+           '\\-','\\+','\\+','\\-','\\+')
 twin_df <- twin_df %>% 
   mutate(signs = signs)
 
@@ -293,7 +294,7 @@ twin_df %>%
       align = 'c') %>% 
   kable_classic_2(full_width = F)
 
-T_neg <- twin_df %>% filter(signs == '-') %>% select(ranks) %>% sum(); T_neg
+T_neg <- twin_df %>% filter(signs == '-') %>% select(ranks) %>% sum()
 ```
 
 Through this table, we see that our test statistic $T^- = 6$. We reject $H_0$ if $T^- \leq T_0$. With $n = 10$ and $\alpha = 0.05$, our critical value $T_0 = 11.$ Therefore we reject $H_0$ and conclude that junior high school $A$ has superior academic effectiveness.
@@ -301,8 +302,8 @@ Through this table, we see that our test statistic $T^- = 6$. We reject $H_0$ if
 We can obtain the same conclusion, as well as the *p*-value, using the `wilcox.test()` in R.
 
 ```{r}
-wilcox <- wilcox.test(twin_df$a, twin_df$b, 
-                      paired = T, alternative = 'greater');wilcox
+wilcox.test(twin_df$a, twin_df$b, 
+            paired = T, alternative = 'greater')
 ```
 
 
@@ -311,7 +312,7 @@ wilcox <- wilcox.test(twin_df$a, twin_df$b,
 **Solution.**
 
 ```{r}
-T_pos <- twin_df %>% filter(signs == '+') %>% select(ranks) %>% sum(); T_pos
+T_pos <- twin_df %>% filter(signs == '+') %>% select(ranks) %>% sum()
 ```
 
 Using the same table above, we find our test statistic $T = \min(T^+, T^-) = \min(43,6)$. With $\alpha = 0.05$, we reject $H_0$ since $T = 6 \leq T_0 = 8.$

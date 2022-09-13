@@ -862,16 +862,14 @@ if <span class="math inline">\(i\neq i&#39;.\)</span></li>
 <p><strong>Solution.</strong></p>
 <p><span class="math display">\[
 \begin{align}
-Cov(Y_{ij}, Y_{i&#39;j}) &amp;= \mathbb E \left[ (Y_{ij} - \mathbb E
-[Y_{ij}])(Y_{i&#39;j} - \mathbb E [Y_{i&#39;j}])\right] \\
-&amp;= \mathbb E \left[ (\mu + \tau_i + \beta_j + \epsilon_{ij} - (\mu +
-\tau_i))(\mu + \tau_{i&#39;} + \beta_j + \epsilon_{i&#39;j} - (\mu +
-\tau_{i&#39;}))\right] \\
-&amp;= \mathbb E \left[ (\beta_j + \epsilon_{ij})(\beta_j +
-\epsilon_{i&#39;j}) \right] \\
-&amp;= \mathbb E \left[ (\beta_j^2 + \beta_j \epsilon_{i&#39;j} +
-\beta_j \epsilon_{ij} + \epsilon_{ij}\epsilon_{i&#39;j}) \right] \\
-&amp;= 0
+Cov(Y_{ij}, Y_{i&#39;j}) &amp;= Cov(\mu + \tau_i + \beta_j +
+\epsilon_{ij}, \mu + \tau_i + \beta_j + \epsilon_{i&#39;j}) \\
+&amp;= Cov(\beta_j + \epsilon_{ij}, \beta_j + \epsilon_{i&#39;j}) \\
+&amp;= Cov(\beta_j, \beta_j) + Cov(\beta_j, \epsilon_{i&#39;j}) +
+Cov(\epsilon_{ij}, \beta_j) + Cov(\epsilon_{ij}, \epsilon_{i&#39;j}) \\
+&amp;= Cov(\beta_j, \beta_j) + 0 + 0 + 0 \\
+&amp;= var(\beta_j) \\
+&amp;= \sigma_B^2
 \end{align}
 \]</span></p>
 <ol start="3" style="list-style-type: lower-alpha">
@@ -881,8 +879,7 @@ part (b) to determine the conditions under which two observations from
 the same block are independent of one another.</li>
 </ol>
 <p>The mean <span class="math inline">\(\mu\)</span> and each treatment
-effect must be held constant. It must also hold that <span class="math inline">\(\mathbb E[\beta_j] = 0\)</span> and <span class="math inline">\(\mathbb E[\epsilon_{ij}] = 0\)</span> for all
-<span class="math inline">\(i,j\)</span>.</p>
+effect must be held constant. It must also hold that <span class="math inline">\(\sigma_B^2 = 0.\)</span></p>
 <ol start="4" style="list-style-type: lower-alpha">
 <li>Find the expected value and variance of <span class="math inline">\(Y_{ij}\)</span></li>
 </ol>
@@ -1119,8 +1116,8 @@ terms, <span class="math inline">\(H_0: P(X &gt; Y) = p = 0.5,\)</span>
 where <span class="math inline">\(X\)</span> is school A’s academic
 effectiveness and <span class="math inline">\(Y\)</span> is school B’s
 academic effectiveness. We produce the following signs:</p>
-<pre class="r"><code>signs &lt;- c(&#39;+&#39;,&#39;+&#39;,&#39;-&#39;,&#39;+&#39;,&#39;+&#39;,
-           &#39;-&#39;,&#39;+&#39;,&#39;+&#39;,&#39;-&#39;,&#39;+&#39;)
+<pre class="r"><code>signs &lt;- c(&#39;\\+&#39;,&#39;\\+&#39;,&#39;\\-&#39;,&#39;\\+&#39;,&#39;\\+&#39;,
+           &#39;\\-&#39;,&#39;\\+&#39;,&#39;\\+&#39;,&#39;\\-&#39;,&#39;\\+&#39;)
 twin_df &lt;- twin_df %&gt;% 
   mutate(signs = signs)
 
@@ -1157,8 +1154,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 39
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1171,8 +1168,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 75
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1185,8 +1182,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 69
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
+-
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1199,8 +1196,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 55
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1213,8 +1210,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 74
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1227,8 +1224,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 52
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
+-
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1241,8 +1238,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 56
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1255,8 +1252,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 72
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1269,8 +1266,8 @@ Sign of <span class="math inline">\(D_i\)</span>
 89
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
+-
+</td>
 </tr>
 <tr>
 <td style="text-align:center;">
@@ -1283,23 +1280,13 @@ Sign of <span class="math inline">\(D_i\)</span>
 47
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 </tr>
 </tbody>
 </table>
-Here, our test statistic <span class="math inline">\(M = 7.\)</span> We
-compute</li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
+<p>Here, our test statistic <span class="math inline">\(M = 7.\)</span>
+We compute</p>
 <pre class="r"><code>m &lt;- 7
 n &lt;- 10
 binom.test(x = m, n = n, p = 0.5,
@@ -1380,8 +1367,8 @@ Rank
 39
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 <td style="text-align:center;">
 28
 </td>
@@ -1400,8 +1387,8 @@ Rank
 75
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 <td style="text-align:center;">
 5
 </td>
@@ -1420,8 +1407,8 @@ Rank
 69
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
+-
+</td>
 <td style="text-align:center;">
 -4
 </td>
@@ -1440,8 +1427,8 @@ Rank
 55
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 <td style="text-align:center;">
 15
 </td>
@@ -1460,8 +1447,8 @@ Rank
 74
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 <td style="text-align:center;">
 12
 </td>
@@ -1480,8 +1467,8 @@ Rank
 52
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
+-
+</td>
 <td style="text-align:center;">
 -2
 </td>
@@ -1500,8 +1487,8 @@ Rank
 56
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 <td style="text-align:center;">
 7
 </td>
@@ -1520,8 +1507,8 @@ Rank
 72
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 <td style="text-align:center;">
 9
 </td>
@@ -1540,8 +1527,8 @@ Rank
 89
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
+-
+</td>
 <td style="text-align:center;">
 -3
 </td>
@@ -1560,8 +1547,8 @@ Rank
 47
 </td>
 <td style="text-align:center;">
-<ul>
-<li></td>
++
+</td>
 <td style="text-align:center;">
 13
 </td>
@@ -1570,19 +1557,8 @@ Rank
 </td>
 </tr>
 </tbody>
-</table></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-<pre class="r"><code>T_neg &lt;- twin_df %&gt;% filter(signs == &#39;-&#39;) %&gt;% select(ranks) %&gt;% sum(); T_neg</code></pre>
-<pre><code>## [1] 6</code></pre>
+</table>
+<pre class="r"><code>T_neg &lt;- twin_df %&gt;% filter(signs == &#39;-&#39;) %&gt;% select(ranks) %&gt;% sum()</code></pre>
 <p>Through this table, we see that our test statistic <span class="math inline">\(T^- = 6\)</span>. We reject <span class="math inline">\(H_0\)</span> if <span class="math inline">\(T^-
 \leq T_0\)</span>. With <span class="math inline">\(n = 10\)</span> and
 <span class="math inline">\(\alpha = 0.05\)</span>, our critical value
@@ -1591,8 +1567,8 @@ Rank
 effectiveness.</p>
 <p>We can obtain the same conclusion, as well as the <em>p</em>-value,
 using the <code>wilcox.test()</code> in R.</p>
-<pre class="r"><code>wilcox &lt;- wilcox.test(twin_df$a, twin_df$b, 
-                      paired = T, alternative = &#39;greater&#39;);wilcox</code></pre>
+<pre class="r"><code>wilcox.test(twin_df$a, twin_df$b, 
+            paired = T, alternative = &#39;greater&#39;)</code></pre>
 <pre><code>## 
 ##  Wilcoxon signed rank exact test
 ## 
@@ -1604,8 +1580,7 @@ using the <code>wilcox.test()</code> in R.</p>
 your answers.</li>
 </ol>
 <p><strong>Solution.</strong></p>
-<pre class="r"><code>T_pos &lt;- twin_df %&gt;% filter(signs == &#39;+&#39;) %&gt;% select(ranks) %&gt;% sum(); T_pos</code></pre>
-<pre><code>## [1] 49</code></pre>
+<pre class="r"><code>T_pos &lt;- twin_df %&gt;% filter(signs == &#39;+&#39;) %&gt;% select(ranks) %&gt;% sum()</code></pre>
 <p>Using the same table above, we find our test statistic <span class="math inline">\(T = \min(T^+, T^-) = \min(43,6)\)</span>. With
 <span class="math inline">\(\alpha = 0.05\)</span>, we reject <span class="math inline">\(H_0\)</span> since <span class="math inline">\(T =
 6 \leq T_0 = 8.\)</span></p>
@@ -1708,8 +1683,8 @@ twin_df &lt;- data.frame(twin_pair,
 twin_df %&gt;%
   kbl() %&gt;% 
   kable_classic_2(full_width = F)
-signs &lt;- c(&#39;+&#39;,&#39;+&#39;,&#39;-&#39;,&#39;+&#39;,&#39;+&#39;,
-           &#39;-&#39;,&#39;+&#39;,&#39;+&#39;,&#39;-&#39;,&#39;+&#39;)
+signs &lt;- c(&#39;\\+&#39;,&#39;\\+&#39;,&#39;\\-&#39;,&#39;\\+&#39;,&#39;\\+&#39;,
+           &#39;\\-&#39;,&#39;\\+&#39;,&#39;\\+&#39;,&#39;\\-&#39;,&#39;\\+&#39;)
 twin_df &lt;- twin_df %&gt;% 
   mutate(signs = signs)
 
@@ -1729,10 +1704,10 @@ twin_df %&gt;%
       align = &#39;c&#39;) %&gt;% 
   kable_classic_2(full_width = F)
 
-T_neg &lt;- twin_df %&gt;% filter(signs == &#39;-&#39;) %&gt;% select(ranks) %&gt;% sum(); T_neg
-wilcox &lt;- wilcox.test(twin_df$a, twin_df$b, 
-                      paired = T, alternative = &#39;greater&#39;);wilcox
-T_pos &lt;- twin_df %&gt;% filter(signs == &#39;+&#39;) %&gt;% select(ranks) %&gt;% sum(); T_pos
+T_neg &lt;- twin_df %&gt;% filter(signs == &#39;-&#39;) %&gt;% select(ranks) %&gt;% sum()
+wilcox.test(twin_df$a, twin_df$b, 
+            paired = T, alternative = &#39;greater&#39;)
+T_pos &lt;- twin_df %&gt;% filter(signs == &#39;+&#39;) %&gt;% select(ranks) %&gt;% sum()
 wilcox.test(twin_df$a, twin_df$b, paired = T, alternative = &#39;two.sided&#39;)</code></pre>
 </div>
 
