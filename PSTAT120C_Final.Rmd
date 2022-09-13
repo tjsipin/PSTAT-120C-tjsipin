@@ -5,10 +5,9 @@ date: "9/9/2022"
 output: html_document
 ---
 
-# PSTAT 120C Final
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
 ```
 
 ## Problem 1
@@ -70,7 +69,312 @@ Z &= \frac{\hat p_1 - \hat p_2}{\sqrt{\hat p \hat q \left( \frac{1}{n_1} + \frac
 \end{align}
 $$
 
-With $\alpha = 0.05$, our critical value (iii) is $1.960$, so we reject $H_0$ if $Z \leq -1.960$ or $Z \geq 1.960$. Our *p*-value (iv) is given by `pnorm(6.09)` minus $1$, which gives a value of 0. Thus, (v) we reject $H_0$ and conclude that there is strong evidence that the proportion of treated persons who improved is different compared to the proportion of untreated persons who improved.
+With $\alpha = 0.05$, our critical value (iii) is $1.960$, so we reject $H_0$ if $Z \leq -1.960$ or $Z \geq 1.960$. Our *p*-value (iv) is given by $1 - 2($`pnorm(6.09)`$)$, which gives a value of $1.13 \times 10^{-9}$. Thus, (v) we reject $H_0$ and conclude that there is strong evidence that the proportion of treated persons who improved is different compared to the proportion of untreated persons who improved.
+
+(c) Prove that (assuming $\alpha$ is the same for both tests) the $\chi^2$ statistic $X^2$ is equivalent to the square of the test statistic $Z (Z^2)$. In other words, prove that the $\chi^2$ test used in part (a) is equivalent to the two-tailed *Z*-test used in part (b).
+
+*Hint:* Use the *Z* statistic
+
+$$
+\frac{\hat p_1 - \hat p_2}{\sqrt{\hat p \hat q \left( \frac{1}{n_1} + \frac{1}{n_2} \right)}}.
+$$
+
+**Solution.**
+
+In Chapter 14.2 of the textbook, for comparing $k = 2$ populations' proportions, our $X^2$ statistic is
+
+$$
+\begin{align}
+X^2 &= \displaystyle \sum_{i = 1}^2 \frac{\left[n_i - \mathbb E (n_i)\right]^2}{\mathbb E(n_i)} \\
+&= \frac{(n_1 - np_1)^2}{np_1} + \frac{(n_2 - np_2)^2}{np_2} \\
+&= \frac{(n_1 - np_1)^2}{np_1} + \frac{[(n - n_1) - n(1 - p_1)]^2}{n(1 - p_1)} \\
+&= \frac{(n_1 - np_1)^2}{np_1} + \frac{(np_1 - n_1)^2}{n(1 - p_1)} \\
+&= (n_1 - np_1)^2 \left( \frac{1}{np_1} + \frac{1}{n(1 - p_1)} \right) \\
+&= (n_1 - np_1)^2 \left( \frac{(1 - p_1)}{np_1(1 - p_1)} + \frac{p_1}{np(1 - p_1)} \right) \\
+&= (n_1 - np_1)^2 \left( \frac{(1 - p_1 + p_1)}{np_1(1 - p_1)} \right) \\
+&= \frac{(n_1 - np_1)^2}{np_1(1 - p_1)}
+\end{align}
+$$
+
+In Chapter 7.5, we have seen that for large *n*
+
+$$
+\frac{n_1 - n p_1}{\sqrt{np_1(1 - p_1)}}
+$$
+
+has approximately a standard normal distribution. Thus, $Z^2$ is equivalent to $X^2$.
+
+## Problem 2
+
+Consider the following model for the responses measured in a randomized block design containing $b$ blocks and $k$ treatments:
+
+$$
+Y_{ij} = \mu + \tau_i + \beta_j + \epsilon_{ij}
+$$
+
+where $Y_{ij} =$ response to treatment $i$ in block $j$; $\mu = $ overall mean; $\tau_i = $ nonrandom effect of treatment $i$, where $\displaystyle \sum_{i = 1}^k \tau_i = 0$; $\beta_j =$ random effect of block $j$, where $\beta_j$s are independent, normally distributed random variables with $\mathbb E[\beta_j] = 0$ and $var(\beta_j) = \sigma^2_B$ for $j = 1,2,\dots,b$; $\epsilon_{ij} =$ random error terms, where $\epsilon_{ij}$s are independent, normally distributed random variables with $\mathbb E[\epsilon_{ij}] = 0$ and $var(\epsilon_{ij}) = \sigma^2_\epsilon$ for $i = 1,2,\dots,k$ and $j = 1,2,\dots,b$. <br>
+<br>
+Further assume that the $\beta_j$s and $\epsilon_{ij}$s are also independent. This model differs from taht presented in Section 13.8 of the textbook in that the block effects are assumed to be fixed but unknown constants.
+
+(a) Assuming the model just described is accurate, show that observations taken from different blocks are independent of one another. That is, show that $Y_{ij}$ and $Y_{ij'}$ are independent if $j \neq j'$, as are $Y_{ij}$ and $Y_{i'j'}$ if $i \neq i'$ and $j \neq j'$.
+
+**Solution.** 
+
+If $j \neq j'$ then we can show that $Y_{ij}$ and $Y_{i^* j'}$ are independent, where $i^*$ can equal $i$ or not equal $i$, by showing their covariance is equal to 0. First we must show that $aY_{ij} + bY_{i^* j'}$ are jointly normal. With $\mu, \tau_i$ held constant,
+
+$$
+\begin{align}
+\mathbb E[Y_{ij}] &= \mu + \tau_i \\
+var[Y_{ij}] &= \sigma_\beta^2 + \sigma_\epsilon^2 \\
+\implies Y_{ij} &\sim N(\mu + \tau_i, \sigma_\beta^2 + \sigma_\epsilon^2)
+\end{align}
+$$
+
+Then we show that $aY_{ij} + bY_{i^*j'}$ have a normal pdf for all $a,b\in\mathbb R$.
+
+$$
+\begin{align}
+aY_{ij} + bY_{i^*j'} &\sim N(a\mu + b\mu + a\tau_i + b\tau_{i^*}, (a^2 + b^2)(\sigma_\beta^2 + \sigma_\epsilon^2)) \\
+f_{aY_{ij} + bY_{i^*j'}}(x) &= \frac{1}{(a + b)(\sigma_\beta^2 + \sigma_\epsilon^2)}\exp\left[-\frac{1}{2}\left(\frac{x- (a\mu + b\mu + a\tau_i + b\tau_{i^*})}{(a + b)(\sigma_\beta^2 + \sigma_\epsilon^2)}\right)^2\right]
+\end{align}
+$$
+Now we show that the covariance of $Y_{ij}$ and $Y_{i^*j'}$ is 0 for any $i^*$:
+
+$$
+\begin{align}
+Cov(Y_{ij}, Y_{i^*j'}) &= \mathbb E \left[ (Y_{ij} - \mathbb E [Y_{ij}])(Y_{i'j} - \mathbb E [Y_{i^*j'}])\right] \\
+&= \mathbb E \left[ (\mu + \tau_i + \beta_j + \epsilon_{ij} - (\mu + \tau_i))(\mu + \tau_{i^*} + \beta_{j'} + \epsilon_{i^*j'} - (\mu + \tau_{i^*}))\right] \\
+&= \mathbb E \left[ (\beta_j + \epsilon_{ij})(\beta_{j'} + \epsilon_{i^*j'}) \right] \\
+&= \mathbb E \left[ \beta_j \beta_{j'} + \beta_j \epsilon_{i^*j'} + \beta_{j'}\epsilon_{ij} + \epsilon_{ij}\epsilon_{i^*j'} \right] \\
+&= \mathbb E\beta_j \beta_{j'} + \mathbb E \beta_j \epsilon_{i^*j'} + \mathbb E\beta_{j'}\epsilon_{ij} + \mathbb E \epsilon_{ij}\epsilon_{i^*j'} \\
+&= \mathbb E\beta_j \mathbb E\beta_{j'} + \mathbb E \beta_j \mathbb E \epsilon_{i^*j'} + \mathbb E\beta_{j'}\mathbb E\epsilon_{ij} + \mathbb E \epsilon_{ij}\mathbb E\epsilon_{i^*j'} (*) \\
+&= 0
+\end{align}
+$$
+
+The equality at $(*)$ is possible since $\beta_j$s and $\epsilon_{ij}$s are independent and the $\beta_j$s and $\epsilon_{ij}$s are also independent from each other. Thus, we have proved that $Y_ij$ and $Y_{i^*j'}$ are independent from each other, where $i^*$ can be equal to $i$ or not equal to $i$.
+
+(b) Derive the covariance of two observations from the same block. That is, find $Cov(Y_{ij}, Y_{i'j})$ if $i\neq i'.$
+
+**Solution.** 
+
+$$
+\begin{align}
+Cov(Y_{ij}, Y_{i'j}) &= \mathbb E \left[ (Y_{ij} - \mathbb E [Y_{ij}])(Y_{i'j} - \mathbb E [Y_{i'j}])\right] \\
+&= \mathbb E \left[ (\mu + \tau_i + \beta_j + \epsilon_{ij} - (\mu + \tau_i))(\mu + \tau_{i'} + \beta_j + \epsilon_{i'j} - (\mu + \tau_{i'}))\right] \\
+&= \mathbb E \left[ (\beta_j + \epsilon_{ij})(\beta_j + \epsilon_{i'j}) \right] \\
+&= \mathbb E \left[ (\beta_j^2 + \beta_j \epsilon_{i'j} + \beta_j \epsilon_{ij} + \epsilon_{ij}\epsilon_{i'j}) \right] \\
+&= 0
+\end{align}
+$$
+
+(c) Two random variables that have a joint normal distribution are independent if and only if their covariance is 0. Use the result from part (b) to determine the conditions under which two observations from the same block are independent of one another.
+
+The mean $\mu$ and each treatment effect must be held constant. It must also hold that $\mathbb E[\beta_j] = 0$ and $\mathbb E[\epsilon_{ij}] = 0$ for all $i,j$.
+
+(d) Find the expected value and variance of $Y_{ij}$
+
+**Solution.** 
+
+The solution to this answer was derived in part (a), but is rewritten here:
+
+Since $\mu$ and $\tau_i$ are held constant, we have the following:
+
+$$
+\begin{align}
+\mathbb E[Y_{ij}] &= \mu + \tau_i \\
+var[Y_{ij}] &= \sigma_\beta^2 + \sigma_\epsilon^2 \\
+\implies Y_{ij} &\sim N(\mu + \tau_i, \sigma_\beta^2 + \sigma_\epsilon^2)
+\end{align}
+$$
+
+This comes directly from the property that if $X \sim N(\mu_X, \sigma_X^2), \quad Y \sim N(\mu_Y, \sigma_Y^2), \quad Z = X + Y$ then $Z \sim N(\mu_X + \mu_Y, \sigma_X^2 + \sigma_Y^2)$. 
+
+(e) Let $\bar Y_{i*}$ denote the average of all responses to treatment $i$. Use the model to derive $\mathbb E[\bar Y_{i*}]$ and $var(\bar Y_{i*})$.
+
+**Solution.**
+
+Since $Y_{ij} \sim N(\mu + \tau_i, \sigma_B^2 + \sigma_\epsilon^2),$ we can use the property used in part (d) to derive the mean and variance of $\bar Y_{i*}$. 
+$$
+\begin{align}
+\bar Y_{i*} &= \frac{1}{b}\displaystyle\sum_{j=1}^b Y_{ij} \\
+&= \frac{1}{b}\left( Y_{i1} + \dots + Y_{ib} \right) \\
+\end{align}
+$$
+
+So, $b \bar Y_{i*} \sim N\left(b(\mu + \tau_i), b^2(\sigma_B^2 + \sigma_\epsilon^2)\right)$. Therefore, $\mathbb E [b \bar Y_{i*}] = b(\mu + \tau_i)]$ and $var[b\bar Y_{i*}] = b^2 var[\bar Y_{i*}] = b(\sigma_B^2 + \sigma_\epsilon^2)$. After simple algebra, we find that $\mathbb E[\bar Y_{i*}] = \mu + \tau_i$ and $var[\bar Y_{i*}] = \frac{(\sigma_B^2 + \sigma_\epsilon^2)}{b}$.
+
+(f) Calculate the bias of $\bar Y_{i*}$. Is it an unbiased estimator of the mean response to treatment $i$?
+
+**Solution.**
+
+Recall that $\mathbb E[\beta_j] = 0$ and $\mathbb E[\epsilon_{ij} = 0$ for all $j$.
+
+$$
+\begin{align}
+\bar Y_{i*} &= \frac{1}{b}\displaystyle\sum_{j=1}^b Y_{ij} \\
+&= \frac{1}{b}\displaystyle\sum_{j=1}^b \left(\mu + \tau_i + \beta_j + \epsilon_{ij}\right) \\
+&= \frac{1}{b}\displaystyle\sum_{j=1}^b \mu + \frac{1}{b}\displaystyle\sum_{j=1}^b\tau_i + \frac{1}{b}\displaystyle\sum_{j=1}^b\beta_j + \frac{1}{b}\displaystyle\sum_{j=1}^b\epsilon_{ij} \\
+&= \frac{b\mu}{b} + \frac{b\tau_i}{b} + 0 + 0 \\
+&= \mu + \tau_i.
+\end{align}
+$$
+
+Since $\mathbb E \bar Y_{i*} = Y_{i*}$, the bias of $\bar Y_{i*}$ is 0 and is thus an unbiased estimator of the mean response to treatment $i$.
+
+## Problem 3
+
+For a comparison of the academic effectiveness of two junior high schools A and B, and experiment was designed using ten sets of identical twins, where each twin had just completed the sixth grade. In each case, the twins in the same set had obtained their previous schooling in the same classrooms at each grade level. One child was selected at random from each set and assigned to school A. The other was sent to school B. Near the end of the ninth grade, an achievement test was given to each child in the experiment. The results are shown in the accompanying table.
+
+```{r}
+library(kableExtra)
+twin_pair <- 1:10
+a <- c(67, 80, 65, 70, 86,
+       50, 63, 81, 86, 60)
+b <- c(39, 75, 69, 55, 74, 
+       52, 56, 72, 89, 47)
+twin_df <- data.frame(twin_pair,
+                      a, 
+                      b)
+twin_df %>%
+  kbl() %>% 
+  kable_classic_2(full_width = F)
+```
+
+(a) Using the sign test, test the hypothesis that the two schools are the same in academic effectiveness, as measured by scores on the achievement test, against the alternative that the schools are not equally effective. What would you conclude with $\alpha = 0.05$?
+
+**Solution.**
+
+We have our null hypothesis $H_0:$ the schools are the same in academic effectiveness, or in mathematical terms, $H_0: P(X > Y) = p = 0.5,$ where $X$ is school A's academic effectiveness and $Y$ is school B's academic effectiveness. We produce the following signs:
+
+```{r}
+signs <- c('+','+','-','+','+',
+           '-','+','+','-','+')
+twin_df <- twin_df %>% 
+  mutate(signs = signs)
+
+twin_df %>%
+  kbl(col.names = c('Twin Pair', 'A', 'B', 'Sign of $D_i$'),
+      align = 'c') %>% 
+  kable_classic_2(full_width = F)
+```
+Here, our test statistic $M = 7.$ We compute 
+
+```{r}
+m <- 7
+n <- 10
+binom.test(x = m, n = n, p = 0.5,
+           alternative = 'two.sided')
+```
+
+Since the *p*-value is $0.3438$, which is greater than $\alpha = 0.05$, so we would fail to reject the null hypothesis. That is, there is not enough evidence to conclude that the two schools are not the same in academic effectiveness.
+
+(b) Suppose it is suspected that junior high school A has a superior faculty and better learning facilities. Test the hypothesis of equal academic effectiveness against the alternative that school A is superior. What is the *p*-value associated with this test?
+
+**Solution.**
+
+Our hypotheses are:
+
+$$
+\begin{align}
+H_0&: \text{The population distributions for junior high school A and B are identical.} \\
+H_a&: \text{The population relative frequency distribution for junior high school A is shifted too the right of that to for junior high school B's.}
+\end{align}
+$$
+
+We perform a one-tailed Wilcoxon Signed-Rank Test, using the rank sum $T^-$ of the negative differences.
+
+```{r}
+twin_df <- twin_df %>% 
+  mutate(D_i = a - b) %>% 
+  mutate(ranks = rank(abs(D_i)))
+twin_df %>%
+  kbl(col.names = c('Twin Pair', 'A', 'B', 'Sign of $D_i$', '$D_i$', 'Rank'),
+      align = 'c') %>% 
+  kable_classic_2(full_width = F)
+
+T_neg <- twin_df %>% filter(signs == '-') %>% select(ranks) %>% sum(); T_neg
+```
+
+Through this table, we see that our test statistic $T^- = 6$. We reject $H_0$ if $T^- \leq T_0$. With $n = 10$ and $\alpha = 0.05$, our critical value $T_0 = 11.$ Therefore we reject $H_0$ and conclude that junior high school $A$ has superior academic effectiveness.
+
+We can obtain the same conclusion, as well as the *p*-value, using the `wilcox.test()` in R.
+
+```{r}
+wilcox <- wilcox.test(twin_df$a, twin_df$b, 
+                      paired = T, alternative = 'greater');wilcox
+```
+
+
+(c) Repeat the test in (a) using the Wilcoxon signed-rank test. Compare your answers.
+
+**Solution.**
+
+```{r}
+T_pos <- twin_df %>% filter(signs == '+') %>% select(ranks) %>% sum(); T_pos
+```
+
+Using the same table above, we find our test statistic $T = \min(T^+, T^-) = \min(43,6)$. With $\alpha = 0.05$, we reject $H_0$ since $T = 6 \leq T_0 = 8.$
+
+```{r}
+wilcox.test(twin_df$a, twin_df$b, paired = T, alternative = 'two.sided')
+```
+
+Here, our *p*-value is $0.02734$, which is less than $\alpha = 0.05$, so we reject the null hypothesis, which contradicts our conclusion in part (a).
+
+## Problem 4
+
+Let $Y_1, Y_2, \dots, Y_n$ denote a random sample from an exponentially distributed population with density $f(y|\theta) = \theta e^{-\theta y}, 0 < y$. (Note that the mean of this population is $\mu = \frac{1}{\theta}$.) Use the conjugate gamme $(\alpha, \beta)$ prior for $\theta$ to find the following:
+
+(a) The joint density, or $f(y_1, y_2, \dots, y_n, \theta)$;
+
+(b) The marginal density, or $m(y_1, y_2, \dots, y_n)$;
+
+(c) The posterior density for $\theta|(y_1,\dots,y_n)$.
+
+**Solution.**
+
+(a) The joint density
+
+$$
+\begin{align}
+f(y_1, y_2, \dots, y_n, \theta) &= \mathcal L(y_1, \dots, y_n | \theta) \times g(\theta) \\
+&= \displaystyle \prod_{i = 1}^n \theta e^{-\theta y_i} \times \frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha - 1}e^{-\beta\theta} \\
+&= \theta^n e^{-\theta\sum_{i = 1} ^n y_i} \frac{\beta^\alpha}{\Gamma(\alpha)}\theta^{\alpha - 1}e^{-\beta\theta} \\
+&= \theta^{n+\alpha-1}e^{-\theta \sum_{i = 1} ^n y_i - \beta \theta} \frac{\beta ^\alpha}{\Gamma(\alpha)} \\
+&= \theta^{n+\alpha-1}e^{-\theta\left(\sum_{i=1}^n(y_i) + \beta\right)} \frac{\beta ^\alpha}{\Gamma(\alpha)} \\
+\end{align}
+$$
+
+(b) The marginal density
+
+$$
+\begin{align}
+m(y_1,\dots,y_n) &= \int_{-\infty}^\infty f(y_1, y_2, \dots, y_n, \theta) d\theta \\
+&= \int_0^\infty \theta^{n+\alpha-1}e^{-\theta\left(\sum_{i=1}^n(y_i) + \beta\right)} \frac{\beta ^\alpha}{\Gamma(\alpha)} d\theta \\
+&= \frac{\beta ^\alpha}{\Gamma(\alpha)} \frac{\Gamma(n + \alpha)}{\left(\sum_{i=1}^n(y_i) + \beta\right)^{n + \alpha}}
+\end{align}
+$$
+
+The last equality comes from the property of the gamma function:
+
+$$
+\int_0^\infty x^{\alpha - 1}e^{-\lambda x} dx = \frac{\Gamma(\alpha)}{\lambda^\alpha}, \qquad \text{for } \lambda > 0
+$$
+
+(c) The posterior density
+
+$$
+\begin{align}
+g^*(\theta|y_1,\dots,y_n) &= \frac{f(y_1,\dots, y_n, \theta)}{m(y_1,\dots,y_n)} \\
+&= \frac{\theta^{n+\alpha-1}e^{-\theta\left(\sum_{i=1}^n(y_i) + \beta\right)} \frac{\beta ^\alpha}{\Gamma(\alpha)}}{\frac{\beta ^\alpha}{\Gamma(\alpha)} \frac{\Gamma(n + \alpha)}{\left(\sum_{i=1}^n(y_i) + \beta\right)^{n + \alpha}}} \\
+&= \frac{\left(\sum_{i=1}^n(y_i) + \beta\right)^{n + \alpha} \theta^{n + \alpha - 1} e^{-\theta\left(\sum_{i=1}^n(y_i) + \beta\right)}}{\Gamma(n + \alpha)}
+\end{align}
+$$
+
+This follows a Gamma distribution with parameters $\alpha^* = n + \alpha$ and $\beta^* = \sum_{i = 1}^n + \beta$.
+
+# Code Appendix
 
 ```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
